@@ -1,5 +1,6 @@
 "use client";
 
+import Button from "@/components/Button";
 import ImageNext from "@/components/Image";
 import Input from "@/components/Input";
 import Text from "@/components/Text";
@@ -260,10 +261,17 @@ export default function Home() {
                 </div>
               ))}
 
-              <div className="mt-8">
+              <div className="mt-8 space-y-4">
                 <Text
                   label={`from deep_translator import GoogleTranslator# Use any translator you like, in this example GoogleTranslatortranslated = GoogleTranslator(source='auto', target='de').translate("keep it up, you are awesome")  # output -> Weiter so, du bist großartig`}
                   className="font-normal text-black-soft text-base"
+                />
+
+                <Button
+                  type="button"
+                  onClick={() => {}}
+                  label="CONNECT TO CODE"
+                  className="flex w-full justify-center items-center rounded-md bg-blue-primary-soft px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-blue-primary-soft/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                 />
               </div>
             </div>

@@ -11,6 +11,8 @@ const config: Config = {
     extend: {
       colors: {
         "black-soft": "#424242",
+        "blue-soft": "#3C88C0",
+        "blue-primary-soft": "#358FE2",
       },
     },
   },
