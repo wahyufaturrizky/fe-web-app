@@ -1,8 +1,9 @@
 "use client";
 
+import ImageNext from "@/components/Image";
 import Input from "@/components/Input";
 import Text from "@/components/Text";
-import { SearchIcon, MenuIcon } from "@/style/icon";
+import { SearchIcon, MenuIcon, CommentIcon, UserIcon, SettingIcon } from "@/style/icon";
 import {
   Avatar,
   ChatContainer,
@@ -147,40 +148,77 @@ export default function Home() {
                 <Text label="Found API’s (35)" className="font-bold text-white text-base" />
               </div>
 
-              <div>api list</div>
+              <div className="mt-4 overflow-y-auto h-64 mb-6">
+                {Array.from({ length: 100 }, (_, index) => index + 1).map((item) => (
+                  <div
+                    key={item}
+                    className="flex items-center gap-2 border-t-[0.5px] py-2 border-white"
+                  >
+                    <ImageNext
+                      src={"/placeholder.png"}
+                      width={70}
+                      height={70}
+                      alt="thumb-api"
+                      className="h-[70px] w-[70px] object-cover rounded-lg"
+                    />
 
-              <div>history</div>
+                    <div>
+                      <Text label="Translator API" className="font-bold text-white text-base" />
+                      <Text
+                        label="Installs: 1400 (star)"
+                        className="font-normal text-white text-base"
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
 
-              <div>settings profile</div>
+              <Text label="History" className="font-bold text-white text-base" />
+
+              <div className="mt-4 overflow-y-auto h-32 space-y-2 mb-6">
+                {Array.from({ length: 100 }, (_, index) => index + 1).map((item) => (
+                  <div key={item} className="flex items-center gap-2">
+                    <CommentIcon />
+                    <Text label="Translator API" className="font-bold text-white text-sm" />
+                  </div>
+                ))}
+              </div>
+
+              <div className="flex items-center gap-2 mb-4">
+                <UserIcon />
+                <Text label="Settings" className="font-bold text-white text-sm" />
+              </div>
+              <div className="flex items-center gap-2">
+                <SettingIcon />
+                <Text label="Profile" className="font-bold text-white text-sm" />
+              </div>
             </div>
           </Sider>
           <Layout>
-            <Content style={{ margin: "24px 16px 0" }}>
-              <div className="App">
-                <div style={{ position: "relative", height: "800px", width: "700px" }}>
-                  <MainContainer>
-                    <ChatContainer>
-                      <MessageList
-                        scrollBehavior="smooth"
-                        typingIndicator={
-                          isTyping ? <TypingIndicator content="ChatGPT is typing" /> : null
-                        }
-                      >
-                        {messages.map((message, i) => {
-                          console.log(message);
-                          return (
-                            <Message key={i} model={message}>
-                              {message.sender === "ChatGPT" && (
-                                <Avatar src={"emily.png"} name={"Emily"} />
-                              )}
-                            </Message>
-                          );
-                        })}
-                      </MessageList>
-                      <MessageInput placeholder="Send a Message" onSend={handleSendRequest} />
-                    </ChatContainer>
-                  </MainContainer>
-                </div>
+            <Content>
+              <div className="w-full h-lvh">
+                <MainContainer>
+                  <ChatContainer>
+                    <MessageList
+                      scrollBehavior="smooth"
+                      typingIndicator={
+                        isTyping ? <TypingIndicator content="ChatGPT is typing" /> : null
+                      }
+                    >
+                      {messages.map((message, i) => {
+                        console.log(message);
+                        return (
+                          <Message key={i} model={message}>
+                            {message.sender === "ChatGPT" && (
+                              <Avatar src={"emily.png"} name={"Emily"} />
+                            )}
+                          </Message>
+                        );
+                      })}
+                    </MessageList>
+                    <MessageInput placeholder="Send a Message" onSend={handleSendRequest} />
+                  </ChatContainer>
+                </MainContainer>
               </div>
             </Content>
           </Layout>
@@ -188,6 +226,7 @@ export default function Home() {
           <Sider
             breakpoint="lg"
             collapsedWidth="0"
+            width={250}
             onBreakpoint={(broken) => {
               console.log(broken);
             }}
@@ -195,13 +234,75 @@ export default function Home() {
               console.log(collapsed, type);
             }}
           >
-            <div>search</div>
+            <div className="p-4">
+              <div className="space-y-2">
+                <Controller
+                  control={controlFilter}
+                  name="search"
+                  render={({ field: { onChange, onBlur, value }, fieldState: { error } }) => (
+                    <Input
+                      onChange={onChange}
+                      error={error}
+                      onBlur={onBlur}
+                      value={value}
+                      name="search"
+                      type="text"
+                      required
+                      placeholder="Search"
+                      prefixIcon={<SearchIcon />}
+                      classNameInput="rounded-full border-0 p-3 ps-12 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary-blue sm:text-sm"
+                    />
+                  )}
+                />
 
-            <div>api list</div>
+                <Text label="Found API’s (35)" className="font-bold text-white text-base" />
+              </div>
 
-            <div>history</div>
+              <div className="mt-4 overflow-y-auto h-64 mb-6">
+                {Array.from({ length: 100 }, (_, index) => index + 1).map((item) => (
+                  <div
+                    key={item}
+                    className="flex items-center gap-2 border-t-[0.5px] py-2 border-white"
+                  >
+                    <ImageNext
+                      src={"/placeholder.png"}
+                      width={70}
+                      height={70}
+                      alt="thumb-api"
+                      className="h-[70px] w-[70px] object-cover rounded-lg"
+                    />
 
-            <div>settings profile</div>
+                    <div>
+                      <Text label="Translator API" className="font-bold text-white text-base" />
+                      <Text
+                        label="Installs: 1400 (star)"
+                        className="font-normal text-white text-base"
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <Text label="History" className="font-bold text-white text-base" />
+
+              <div className="mt-4 overflow-y-auto h-32 space-y-2 mb-6">
+                {Array.from({ length: 100 }, (_, index) => index + 1).map((item) => (
+                  <div key={item} className="flex items-center gap-2">
+                    <CommentIcon />
+                    <Text label="Translator API" className="font-bold text-white text-sm" />
+                  </div>
+                ))}
+              </div>
+
+              <div className="flex items-center gap-2 mb-4">
+                <UserIcon />
+                <Text label="Settings" className="font-bold text-white text-sm" />
+              </div>
+              <div className="flex items-center gap-2">
+                <SettingIcon />
+                <Text label="Profile" className="font-bold text-white text-sm" />
+              </div>
+            </div>
           </Sider>
         </Layout>
       </Layout>
