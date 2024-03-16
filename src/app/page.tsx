@@ -114,6 +114,7 @@ export default function Home() {
 
         <Layout>
           <Sider
+            trigger={null}
             breakpoint="lg"
             collapsedWidth="0"
             width={250}
@@ -224,6 +225,7 @@ export default function Home() {
           </Layout>
 
           <Sider
+            trigger={null}
             breakpoint="lg"
             collapsedWidth="0"
             width={250}
