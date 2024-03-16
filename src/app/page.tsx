@@ -196,8 +196,8 @@ export default function Home() {
           </Sider>
           <Layout>
             <Content className="h-lvh">
-              <div className="w-full sm:h-[720px] h-[600px]">
-                <MainContainer>
+              <div className="w-full">
+                <MainContainer responsive className="h-[600px]">
                   <ChatContainer>
                     <MessageList
                       scrollBehavior="smooth"
