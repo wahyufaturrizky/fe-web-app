@@ -248,17 +248,19 @@ export default function Home() {
             <div className="p-4">
               <Text label="Api Name" className="font-bold text-black-soft text-xl mb-8" />
 
-              {Array.from({ length: 5 }, (_, index) => index + 1).map((item) => (
-                <div key={item} className="flex flex-col border-b-[0.5px] py-2 border-black-soft">
-                  <div className="flex items-center justify-between">
-                    <Text label="1. API Key" className="font-bold text-black-soft text-base" />
+              <div className="overflow-y-auto h-64">
+                {Array.from({ length: 5 }, (_, index) => index + 1).map((item) => (
+                  <div key={item} className="flex flex-col border-b-[0.5px] py-2 border-black-soft">
+                    <div className="flex items-center justify-between">
+                      <Text label="1. API Key" className="font-bold text-black-soft text-base" />
 
-                    <CheckCircleOutlined />
+                      <CheckCircleOutlined />
+                    </div>
+
+                    <Text label="Description" className="font-normal text-black-soft text-base" />
                   </div>
-
-                  <Text label="Description" className="font-normal text-black-soft text-base" />
-                </div>
-              ))}
+                ))}
+              </div>
 
               <div className="mt-8 space-y-4">
                 <Text
