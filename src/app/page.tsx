@@ -30,7 +30,7 @@ export default function Home() {
     },
   });
 
-  const [messages, setMessages] = useState([
+  const [messages, setMessages] = useState<any>([
     {
       message: "Hello, I'm ChatGPT! Ask me anything!",
       sentTime: "just now",
@@ -40,14 +40,14 @@ export default function Home() {
   ]);
   const [isTyping, setIsTyping] = useState(false);
 
-  const handleSendRequest = async (message) => {
+  const handleSendRequest = async (message: any) => {
     const newMessage = {
       message,
       direction: "outgoing",
       sender: "user",
     };
 
-    setMessages((prevMessages) => [...prevMessages, newMessage]);
+    setMessages((prevMessages: any) => [...prevMessages, newMessage]);
     setIsTyping(true);
 
     try {
@@ -59,7 +59,7 @@ export default function Home() {
           sender: "ChatGPT",
           direction: "incoming",
         };
-        setMessages((prevMessages) => [...prevMessages, chatGPTResponse]);
+        setMessages((prevMessages: any) => [...prevMessages, chatGPTResponse]);
       }
     } catch (error) {
       console.error("Error processing message:", error);
@@ -68,8 +68,8 @@ export default function Home() {
     }
   };
 
-  async function processMessageToChatGPT(chatMessages) {
-    const apiMessages = chatMessages.map((messageObject) => {
+  async function processMessageToChatGPT(chatMessages: any) {
+    const apiMessages = chatMessages.map((messageObject: any) => {
       const role = messageObject.sender === "ChatGPT" ? "assistant" : "user";
       return { role, content: messageObject.message };
     });
@@ -205,7 +205,7 @@ export default function Home() {
                         isTyping ? <TypingIndicator content="ChatGPT is typing" /> : null
                       }
                     >
-                      {messages.map((message, i) => {
+                      {messages.map((message: any, i: any) => {
                         console.log(message);
                         return (
                           <Message key={i} model={message}>
