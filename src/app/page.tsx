@@ -177,7 +177,7 @@ export default function Home() {
 
               <Text label="History" className="font-bold text-white text-base" />
 
-              <div className="mt-4 overflow-y-auto h-32 space-y-2 mb-6">
+              <div className="mt-4 overflow-y-auto h-32 space-y-2 mb-20">
                 {Array.from({ length: 100 }, (_, index) => index + 1).map((item) => (
                   <div key={item} className="flex items-center gap-2">
                     <CommentIcon />
