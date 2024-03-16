@@ -4,7 +4,7 @@ import Button from "@/components/Button";
 import ImageNext from "@/components/Image";
 import Input from "@/components/Input";
 import Text from "@/components/Text";
-import { SearchIcon, MenuIcon, CommentIcon, UserIcon, SettingIcon } from "@/style/icon";
+import { CommentIcon, SearchIcon, SettingIcon, UserIcon } from "@/style/icon";
 import { CheckCircleOutlined } from "@ant-design/icons";
 import {
   Avatar,
@@ -16,10 +16,11 @@ import {
   TypingIndicator,
 } from "@chatscope/chat-ui-kit-react";
 import "@chatscope/chat-ui-kit-styles/dist/default/styles.min.css";
-import { Layout, ConfigProvider } from "antd";
+import { ConfigProvider, Layout } from "antd";
 
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { useCreateOpenApi } from "@/services/open-api/useOpenApi";
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -29,6 +30,30 @@ export default function Home() {
   const { control: controlFilter } = useForm({
     defaultValues: {
       search: "",
+    },
+  });
+
+  const { mutate: createOpenApi, isPending: isPendingCreateOpenApi } = useCreateOpenApi({
+    options: {
+      onSuccess: (res: any) => {
+        const response = res.data;
+
+        const content = response.choices[0]?.message?.content;
+        if (content) {
+          const chatGPTResponse = {
+            message: content,
+            sender: "Emily",
+            direction: "incoming",
+          };
+          setMessages((prevMessages: any) => [...prevMessages, chatGPTResponse]);
+        }
+      },
+      onError: (error: any) => {
+        console.error("Error processing message:", error);
+      },
+      onSettled: () => {
+        setIsTyping(false);
+      },
     },
   });
 
@@ -52,25 +77,8 @@ export default function Home() {
     setMessages((prevMessages: any) => [...prevMessages, newMessage]);
     setIsTyping(true);
 
-    try {
-      const response = await processMessageToChatGPT([...messages, newMessage]);
-      const content = response.choices[0]?.message?.content;
-      if (content) {
-        const chatGPTResponse = {
-          message: content,
-          sender: "Emily",
-          direction: "incoming",
-        };
-        setMessages((prevMessages: any) => [...prevMessages, chatGPTResponse]);
-      }
-    } catch (error) {
-      console.error("Error processing message:", error);
-    } finally {
-      setIsTyping(false);
-    }
-  };
+    const chatMessages = [...messages, newMessage];
 
-  async function processMessageToChatGPT(chatMessages: any) {
     const apiMessages = chatMessages.map((messageObject: any) => {
       const role = messageObject.sender === "Emily" ? "assistant" : "user";
       return { role, content: messageObject.message };
@@ -84,17 +92,8 @@ export default function Home() {
       ],
     };
 
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: "Bearer " + API_KEY,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(apiRequestBody),
-    });
-
-    return response.json();
-  }
+    createOpenApi(apiRequestBody);
+  };
 
   return (
     <ConfigProvider
@@ -213,7 +212,6 @@ export default function Home() {
                       }
                     >
                       {messages.map((message: any, i: any) => {
-                        console.log(message);
                         return (
                           <Message key={i} model={message}>
                             {message.sender === "Emily" && (
