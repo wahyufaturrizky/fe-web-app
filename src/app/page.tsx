@@ -202,7 +202,7 @@ export default function Home() {
                 <MainContainer
                   responsive
                   style={{
-                    height: 600,
+                    height: "90vh",
                   }}
                 >
                   <ChatContainer>
