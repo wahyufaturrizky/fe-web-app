@@ -110,8 +110,7 @@ export default function Home() {
     >
       <Layout>
         <Header className="flex items-center">
-          <MenuIcon />
-          <Text label="APEX" className="font-bold text-white text-3xl ml-4" />
+          <Text label="APEX" className="font-bold text-white text-3xl" />
         </Header>
 
         <Layout>
