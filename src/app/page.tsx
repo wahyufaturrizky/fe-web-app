@@ -32,9 +32,9 @@ export default function Home() {
 
   const [messages, setMessages] = useState<any>([
     {
-      message: "Hello, I'm ChatGPT! Ask me anything!",
+      message: "Hello, I'm Emily! Ask me anything!",
       sentTime: "just now",
-      sender: "ChatGPT",
+      sender: "Emily",
       direction: "incoming",
     },
   ]);
@@ -56,7 +56,7 @@ export default function Home() {
       if (content) {
         const chatGPTResponse = {
           message: content,
-          sender: "ChatGPT",
+          sender: "Emily",
           direction: "incoming",
         };
         setMessages((prevMessages: any) => [...prevMessages, chatGPTResponse]);
@@ -70,14 +70,14 @@ export default function Home() {
 
   async function processMessageToChatGPT(chatMessages: any) {
     const apiMessages = chatMessages.map((messageObject: any) => {
-      const role = messageObject.sender === "ChatGPT" ? "assistant" : "user";
+      const role = messageObject.sender === "Emily" ? "assistant" : "user";
       return { role, content: messageObject.message };
     });
 
     const apiRequestBody = {
       model: "gpt-3.5-turbo",
       messages: [
-        { role: "system", content: "I'm a Student using ChatGPT for learning" },
+        { role: "system", content: "I'm a Student using Emily for learning" },
         ...apiMessages,
       ],
     };
@@ -202,14 +202,14 @@ export default function Home() {
                     <MessageList
                       scrollBehavior="smooth"
                       typingIndicator={
-                        isTyping ? <TypingIndicator content="ChatGPT is typing" /> : null
+                        isTyping ? <TypingIndicator content="Emily is typing" /> : null
                       }
                     >
                       {messages.map((message: any, i: any) => {
                         console.log(message);
                         return (
                           <Message key={i} model={message}>
-                            {message.sender === "ChatGPT" && (
+                            {message.sender === "Emily" && (
                               <Avatar src={"emily.png"} name={"Emily"} />
                             )}
                           </Message>
