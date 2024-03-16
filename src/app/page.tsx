@@ -195,8 +195,8 @@ export default function Home() {
             </div>
           </Sider>
           <Layout>
-            <Content>
-              <div className="w-full h-lvh">
+            <Content className="h-lvh">
+              <div className="w-full sm:h-[720px] h-[600px]">
                 <MainContainer>
                   <ChatContainer>
                     <MessageList
