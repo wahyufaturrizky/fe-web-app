@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@ant-design/icons": "^5.3.3",
     "@ant-design/nextjs-registry": "^1.0.0",
     "@chatscope/chat-ui-kit-react": "^2.0.3",
     "@chatscope/chat-ui-kit-styles": "^1.4.0",

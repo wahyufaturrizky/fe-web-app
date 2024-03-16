@@ -4,6 +4,7 @@ import ImageNext from "@/components/Image";
 import Input from "@/components/Input";
 import Text from "@/components/Text";
 import { SearchIcon, MenuIcon, CommentIcon, UserIcon, SettingIcon } from "@/style/icon";
+import { CheckCircleOutlined } from "@ant-design/icons";
 import {
   Avatar,
   ChatContainer,
@@ -232,6 +233,9 @@ export default function Home() {
           <Sider
             trigger={null}
             breakpoint="lg"
+            style={{
+              background: "#FFFFFF",
+            }}
             collapsedWidth="0"
             width={250}
             onBreakpoint={(broken) => {
@@ -242,72 +246,25 @@ export default function Home() {
             }}
           >
             <div className="p-4">
-              <div className="space-y-2">
-                <Controller
-                  control={controlFilter}
-                  name="search"
-                  render={({ field: { onChange, onBlur, value }, fieldState: { error } }) => (
-                    <Input
-                      onChange={onChange}
-                      error={error}
-                      onBlur={onBlur}
-                      value={value}
-                      name="search"
-                      type="text"
-                      required
-                      placeholder="Search"
-                      prefixIcon={<SearchIcon />}
-                      classNameInput="rounded-full border-0 p-3 ps-12 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary-blue sm:text-sm"
-                    />
-                  )}
+              <Text label="Api Name" className="font-bold text-black-soft text-xl mb-8" />
+
+              {Array.from({ length: 5 }, (_, index) => index + 1).map((item) => (
+                <div key={item} className="flex flex-col border-b-[0.5px] py-2 border-black-soft">
+                  <div className="flex items-center justify-between">
+                    <Text label="1. API Key" className="font-bold text-black-soft text-base" />
+
+                    <CheckCircleOutlined />
+                  </div>
+
+                  <Text label="Description" className="font-normal text-black-soft text-base" />
+                </div>
+              ))}
+
+              <div className="mt-8">
+                <Text
+                  label={`from deep_translator import GoogleTranslator# Use any translator you like, in this example GoogleTranslatortranslated = GoogleTranslator(source='auto', target='de').translate("keep it up, you are awesome")  # output -> Weiter so, du bist großartig`}
+                  className="font-normal text-black-soft text-base"
                 />
-
-                <Text label="Found API’s (35)" className="font-bold text-white text-base" />
-              </div>
-
-              <div className="mt-4 overflow-y-auto h-64 mb-6">
-                {Array.from({ length: 100 }, (_, index) => index + 1).map((item) => (
-                  <div
-                    key={item}
-                    className="flex items-center gap-2 border-t-[0.5px] py-2 border-white"
-                  >
-                    <ImageNext
-                      src={"/placeholder.png"}
-                      width={70}
-                      height={70}
-                      alt="thumb-api"
-                      className="h-[70px] w-[70px] object-cover rounded-lg"
-                    />
-
-                    <div>
-                      <Text label="Translator API" className="font-bold text-white text-base" />
-                      <Text
-                        label="Installs: 1400 (star)"
-                        className="font-normal text-white text-base"
-                      />
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              <Text label="History" className="font-bold text-white text-base" />
-
-              <div className="mt-4 overflow-y-auto h-32 space-y-2 mb-6">
-                {Array.from({ length: 100 }, (_, index) => index + 1).map((item) => (
-                  <div key={item} className="flex items-center gap-2">
-                    <CommentIcon />
-                    <Text label="Translator API" className="font-bold text-white text-sm" />
-                  </div>
-                ))}
-              </div>
-
-              <div className="flex items-center gap-2 mb-4">
-                <UserIcon />
-                <Text label="Settings" className="font-bold text-white text-sm" />
-              </div>
-              <div className="flex items-center gap-2">
-                <SettingIcon />
-                <Text label="Profile" className="font-bold text-white text-sm" />
               </div>
             </div>
           </Sider>
