@@ -198,7 +198,12 @@ export default function Home() {
           <Layout>
             <Content className="h-lvh">
               <div className="w-full">
-                <MainContainer responsive className="h-[600px]">
+                <MainContainer
+                  responsive
+                  style={{
+                    height: 600,
+                  }}
+                >
                   <ChatContainer>
                     <MessageList
                       scrollBehavior="smooth"
