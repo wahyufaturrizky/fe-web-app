@@ -1,7 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { client } from "../client";
 
-function useCreateOpenApi({ options }: { options?: any }) {
+function useCreateUniversa({ options }: { options?: any }) {
   return useMutation({
     mutationFn: (reqBody: any) =>
       client("/matchers", {
@@ -12,4 +12,4 @@ function useCreateOpenApi({ options }: { options?: any }) {
   }) as any;
 }
 
-export { useCreateOpenApi };
+export { useCreateUniversa };

@@ -20,11 +20,9 @@ import { ConfigProvider, Layout } from "antd";
 
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { useCreateOpenApi } from "@/services/open-api/useOpenApi";
+import { useCreateUniversa } from "@/services/universa/useUniversa";
 
 const { Header, Content, Sider } = Layout;
-
-const API_KEY = process.env.NEXT_PUBLIC_YOUR_API_KEY;
 
 export default function Home() {
   const { control: controlFilter } = useForm({
@@ -33,16 +31,38 @@ export default function Home() {
     },
   });
 
-  const { mutate: createOpenApi } = useCreateOpenApi({
+  const [chatAgentResponse, setChatAgentResponse] = useState<any>();
+
+  const { mutate: createOpenApi } = useCreateUniversa({
     options: {
       onSuccess: (res: any) => {
-        if (res.data) {
-          const chatAgentResponse = {
-            message: res.data.api.description,
-            sender: res.data.api.name,
-            direction: "incoming",
-          };
-          setMessages((prevMessages: any) => [...prevMessages, chatAgentResponse]);
+        if (chatAgentResponse) {
+          if (res.data) {
+            const chatAgentResponseRaw = {
+              message: res.data.result,
+              sender: res.data.api.name,
+              direction: "incoming",
+            };
+            setMessages((prevMessages: any) => [...prevMessages, chatAgentResponseRaw]);
+          }
+        } else {
+          setChatAgentResponse(res);
+
+          const questionList = res.data.secret
+            .replaceAll(" ", "")
+            .split(",")
+            .map((item: any, index: any) => `\n${index + 1}. What's your ${item}`);
+
+          const contentMessage = res.data.api.description + `\n ${questionList}`;
+
+          if (res.data) {
+            const chatAgentResponseRaw = {
+              message: contentMessage,
+              sender: res.data.api.name,
+              direction: "incoming",
+            };
+            setMessages((prevMessages: any) => [...prevMessages, chatAgentResponseRaw]);
+          }
         }
       },
       onError: (error: any) => {
@@ -74,7 +94,22 @@ export default function Home() {
     setMessages((prevMessages: any) => [...prevMessages, newMessage]);
     setIsTyping(true);
 
-    createOpenApi({ task: message });
+    if (chatAgentResponse) {
+      const mappedArray = message.split(",").map((item: any, index: any) => {
+        return {
+          [chatAgentResponse?.data?.secret.replaceAll(" ", "").split(",")[index]]: item,
+        };
+      });
+
+      const rawDataSecretProvided = {
+        secret_provided: { ...mappedArray },
+        ...chatAgentResponse?.data,
+      };
+
+      createOpenApi(rawDataSecretProvided);
+    } else {
+      createOpenApi({ task: message });
+    }
   };
 
   return (
@@ -104,66 +139,66 @@ export default function Home() {
             onCollapse={(collapsed, type) => {}}
           >
             <div className="p-4">
-              <div className="space-y-2">
-                <Controller
-                  control={controlFilter}
-                  name="search"
-                  render={({ field: { onChange, onBlur, value }, fieldState: { error } }) => (
-                    <Input
-                      onChange={onChange}
-                      error={error}
-                      onBlur={onBlur}
-                      value={value}
-                      name="search"
-                      type="text"
-                      required
-                      placeholder="Search"
-                      prefixIcon={<SearchIcon />}
-                      classNameInput="rounded-full border-0 p-3 ps-12 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary-blue sm:text-sm"
-                    />
-                  )}
-                />
+              <Controller
+                control={controlFilter}
+                name="search"
+                render={({ field: { onChange, onBlur, value }, fieldState: { error } }) => (
+                  <Input
+                    onChange={onChange}
+                    error={error}
+                    onBlur={onBlur}
+                    value={value}
+                    name="search"
+                    type="text"
+                    required
+                    placeholder="Search"
+                    prefixIcon={<SearchIcon />}
+                    classNameInput="rounded-full border-0 p-3 ps-12 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary-blue sm:text-sm"
+                  />
+                )}
+              />
 
-                <Text label="Found API’s (35)" className="font-bold text-white text-base" />
-              </div>
+              {chatAgentResponse && (
+                <div className="mt-4 mb-6 space-y-2">
+                  <Text label="Found API’s (1)" className="font-bold text-white text-base" />
 
-              <div className="mt-4 overflow-y-auto h-64 mb-6">
-                {Array.from({ length: 10 }, (_, index) => index + 1).map((item) => (
-                  <div
-                    key={item}
-                    className="flex items-center gap-2 border-t-[0.5px] py-2 border-white"
-                  >
+                  <div className="flex items-center gap-2 border-t-[0.5px] py-2 border-white">
                     <ImageNext
                       src={"/placeholder.png"}
                       width={70}
                       height={70}
                       alt="thumb-api"
-                      className="h-[70px] w-[70px] object-cover rounded-lg"
+                      className="h-[70px] w-[70px] object-cover rounded-full"
                     />
 
                     <div>
-                      <Text label="Translator API" className="font-bold text-white text-base" />
                       <Text
-                        label="Installs: 1400 (star)"
+                        label={chatAgentResponse?.data?.api?.name}
+                        className="font-bold text-white text-base"
+                      />
+                      <Text
+                        label={chatAgentResponse?.data?.api?.description.substring(0, 10) + "..."}
                         className="font-normal text-white text-base"
                       />
                     </div>
                   </div>
-                ))}
+                </div>
+              )}
+
+              <div className="hidden">
+                <Text label="History" className="font-bold text-white text-base" />
+
+                <div className="mt-4 overflow-y-auto h-32 space-y-2">
+                  {Array.from({ length: 100 }, (_, index) => index + 1).map((item) => (
+                    <div key={item} className="flex items-center gap-2">
+                      <CommentIcon />
+                      <Text label="Translator API" className="font-bold text-white text-sm" />
+                    </div>
+                  ))}
+                </div>
               </div>
 
-              <Text label="History" className="font-bold text-white text-base" />
-
-              <div className="mt-4 overflow-y-auto h-32 space-y-2 mb-20">
-                {Array.from({ length: 100 }, (_, index) => index + 1).map((item) => (
-                  <div key={item} className="flex items-center gap-2">
-                    <CommentIcon />
-                    <Text label="Translator API" className="font-bold text-white text-sm" />
-                  </div>
-                ))}
-              </div>
-
-              <div className="flex items-center gap-2 mb-4">
+              <div className="flex items-center gap-2 mb-4 mt-20">
                 <UserIcon />
                 <Text label="Settings" className="font-bold text-white text-sm" />
               </div>
@@ -218,23 +253,33 @@ export default function Home() {
             onCollapse={() => {}}
           >
             <div className="p-4">
-              <Text label="Api Name" className="font-bold text-black-soft text-xl mb-8" />
+              {chatAgentResponse?.data?.secret.replaceAll(" ", "").split(",").length && (
+                <div>
+                  <Text label="Api Name" className="font-bold text-black-soft text-xl mb-8" />
 
-              <div className="overflow-y-auto h-64">
-                {Array.from({ length: 5 }, (_, index) => index + 1).map((item) => (
-                  <div key={item} className="flex flex-col border-b-[0.5px] py-2 border-black-soft">
-                    <div className="flex items-center justify-between">
-                      <Text label="1. API Key" className="font-bold text-black-soft text-base" />
+                  <div className="overflow-y-auto h-64">
+                    {chatAgentResponse?.data?.secret
+                      .replaceAll(" ", "")
+                      .split(",")
+                      .map((item: any) => (
+                        <div
+                          key={item}
+                          className="flex flex-col border-b-[0.5px] py-2 border-black-soft"
+                        >
+                          <div className="flex items-center justify-between">
+                            <Text label={item} className="font-bold text-black-soft text-base" />
 
-                      <CheckCircleOutlined />
-                    </div>
+                            <CheckCircleOutlined />
+                          </div>
 
-                    <Text label="Description" className="font-normal text-black-soft text-base" />
+                          <Text label="N/A" className="font-normal text-black-soft text-base" />
+                        </div>
+                      ))}
                   </div>
-                ))}
-              </div>
+                </div>
+              )}
 
-              <div className="mt-8 space-y-4">
+              <div className="mt-8 space-y-4 hidden">
                 <Text
                   label={`from deep_translator import GoogleTranslator# Use any translator you like, in this example GoogleTranslatortranslated = GoogleTranslator(source='auto', target='de').translate("keep it up, you are awesome")  # output -> Weiter so, du bist großartig`}
                   className="font-normal text-black-soft text-base"
