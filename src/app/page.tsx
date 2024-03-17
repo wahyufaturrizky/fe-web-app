@@ -38,8 +38,8 @@ export default function Home() {
       onSuccess: (res: any) => {
         if (res.data) {
           const chatAgentResponse = {
-            message: res.data["Recommended API:"].description,
-            sender: res.data["Recommended API:"].name,
+            message: res.data.api.description,
+            sender: res.data.api.name,
             direction: "incoming",
           };
           setMessages((prevMessages: any) => [...prevMessages, chatAgentResponse]);
