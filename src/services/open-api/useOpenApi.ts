@@ -4,7 +4,7 @@ import { client } from "../client";
 function useCreateOpenApi({ options }: { options?: any }) {
   return useMutation({
     mutationFn: (reqBody: any) =>
-      client("/matcher", {
+      client("/matchers", {
         method: "POST",
         data: reqBody,
       }),

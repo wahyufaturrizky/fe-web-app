@@ -74,11 +74,7 @@ export default function Home() {
     setMessages((prevMessages: any) => [...prevMessages, newMessage]);
     setIsTyping(true);
 
-    let formdata = new FormData();
-
-    formdata.append("answer", message);
-
-    createOpenApi(formdata);
+    createOpenApi({ task: message });
   };
 
   return (
