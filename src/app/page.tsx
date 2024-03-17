@@ -22,7 +22,7 @@ import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useCreateOpenApi } from "@/services/open-api/useOpenApi";
 
-const { Header, Content, Footer, Sider } = Layout;
+const { Header, Content, Sider } = Layout;
 
 const API_KEY = process.env.NEXT_PUBLIC_YOUR_API_KEY;
 
@@ -33,11 +33,9 @@ export default function Home() {
     },
   });
 
-  const { mutate: createOpenApi, isPending: isPendingCreateOpenApi } = useCreateOpenApi({
+  const { mutate: createOpenApi } = useCreateOpenApi({
     options: {
       onSuccess: (res: any) => {
-        console.log("@res", res.data["Recommended API:"].description);
-
         if (res.data) {
           const chatAgentResponse = {
             message: res.data["Recommended API:"].description,
@@ -106,12 +104,8 @@ export default function Home() {
             breakpoint="lg"
             collapsedWidth="0"
             width={250}
-            onBreakpoint={(broken) => {
-              console.log(broken);
-            }}
-            onCollapse={(collapsed, type) => {
-              console.log(collapsed, type);
-            }}
+            onBreakpoint={(broken) => {}}
+            onCollapse={(collapsed, type) => {}}
           >
             <div className="p-4">
               <div className="space-y-2">
@@ -199,9 +193,9 @@ export default function Home() {
                         isTyping ? <TypingIndicator content="Emily is typing" /> : null
                       }
                     >
-                      {messages.map((message: any, i: any) => {
+                      {messages.map((message: any) => {
                         return (
-                          <Message key={i} model={message}>
+                          <Message key={message.sender} model={message}>
                             {message.direction === "incoming" && (
                               <Avatar src={"/emily.png"} name={message.sender} />
                             )}
@@ -224,12 +218,8 @@ export default function Home() {
             }}
             collapsedWidth="0"
             width={250}
-            onBreakpoint={(broken) => {
-              console.log(broken);
-            }}
-            onCollapse={(collapsed, type) => {
-              console.log(collapsed, type);
-            }}
+            onBreakpoint={() => {}}
+            onCollapse={() => {}}
           >
             <div className="p-4">
               <Text label="Api Name" className="font-bold text-black-soft text-xl mb-8" />
