@@ -171,8 +171,8 @@ export default function Home() {
       theme={{
         components: {
           Layout: {
-            siderBg: "#3C88C0",
-            headerBg: "#0E77C3",
+            siderBg: "#F3F3F3",
+            headerBg: "#323232",
             headerPadding: "0px 16px",
           },
         },
@@ -214,9 +214,9 @@ export default function Home() {
 
               {chatAgentResponse && (
                 <div className="mt-4 mb-6 space-y-2">
-                  <Text label="Found API’s (1)" className="font-bold text-white text-base" />
+                  <Text label="Found API’s (1)" className="font-bold text-black text-base" />
 
-                  <div className="flex items-center gap-2 border-t-[0.5px] py-2 border-white">
+                  <div className="flex items-center gap-2 border-t-[0.5px] py-2 border-black">
                     <ImageNext
                       src={"/placeholder.png"}
                       width={70}
@@ -228,11 +228,11 @@ export default function Home() {
                     <div>
                       <Text
                         label={chatAgentResponse?.data?.api?.name}
-                        className="font-bold text-white text-base"
+                        className="font-bold text-black text-base"
                       />
                       <Text
                         label={chatAgentResponse?.data?.api?.description.substring(0, 10) + "..."}
-                        className="font-normal text-white text-base"
+                        className="font-normal text-black text-base"
                       />
                     </div>
                   </div>
@@ -253,12 +253,20 @@ export default function Home() {
               </div>
 
               <div className="flex items-center gap-2 mb-4 mt-20">
-                <UserIcon />
-                <Text label="Settings" className="font-bold text-white text-sm" />
+                <UserIcon
+                  style={{
+                    color: "black",
+                  }}
+                />
+                <Text label="Settings" className="font-bold text-black text-sm" />
               </div>
               <div className="flex items-center gap-2">
-                <SettingIcon />
-                <Text label="Profile" className="font-bold text-white text-sm" />
+                <SettingIcon
+                  style={{
+                    color: "black",
+                  }}
+                />
+                <Text label="Profile" className="font-bold text-black text-sm" />
               </div>
             </div>
           </Sider>
@@ -268,7 +276,7 @@ export default function Home() {
                 <MainContainer
                   responsive
                   style={{
-                    height: "90vh",
+                    height: "75vh",
                   }}
                 >
                   <ChatContainer>
@@ -341,7 +349,7 @@ export default function Home() {
                     type="button"
                     onClick={() => setOpenModal(true)}
                     label="SHOW THE CODE"
-                    className="flex w-full justify-center items-center rounded-md bg-blue-primary-soft px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-blue-primary-soft/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                    className="flex w-full justify-center items-center rounded-md bg-black px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-black/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                   />
                 </div>
               )}
