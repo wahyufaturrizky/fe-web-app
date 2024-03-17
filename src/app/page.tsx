@@ -5,6 +5,8 @@ import ImageNext from "@/components/Image";
 import Input from "@/components/Input";
 import Text from "@/components/Text";
 import { CommentIcon, SearchIcon, SettingIcon, UserIcon } from "@/style/icon";
+import { Modal } from "antd";
+
 import { CheckCircleOutlined } from "@ant-design/icons";
 import {
   Avatar,
@@ -21,6 +23,8 @@ import { ConfigProvider, Layout } from "antd";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useCreateUniversa } from "@/services/universa/useUniversa";
+import SyntaxHighlighter from "react-syntax-highlighter";
+import { docco } from "react-syntax-highlighter/dist/esm/styles/hljs";
 
 const { Header, Content, Sider } = Layout;
 
@@ -32,14 +36,26 @@ export default function Home() {
   });
 
   const [chatAgentResponse, setChatAgentResponse] = useState<any>();
+  const [chatAgentResponseFunc, setChatAgentResponseFunc] = useState<any>();
+  const [openModal, setOpenModal] = useState<any>(false);
+
+  const handleSyntaxHighlighter = (code: any) => {
+    return (
+      <SyntaxHighlighter language="python" style={docco}>
+        {code}
+      </SyntaxHighlighter>
+    );
+  };
 
   const { mutate: createOpenApi } = useCreateUniversa({
     options: {
       onSuccess: (res: any) => {
         if (chatAgentResponse) {
+          setChatAgentResponseFunc(res);
+
           if (res.data) {
             const chatAgentResponseRaw = {
-              message: res.data.result,
+              message: res?.data?.func,
               sender: res.data.api.name,
               direction: "incoming",
             };
@@ -94,18 +110,56 @@ export default function Home() {
     setMessages((prevMessages: any) => [...prevMessages, newMessage]);
     setIsTyping(true);
 
+    const rawDataSecretProvided = {
+      secret_provided: {
+        "YOUR-API-KEY": "59a38afb45msh997d3e62cae8de4p15522djsn13a589fdd1aa",
+      },
+
+      api: {
+        description:
+          "Access flight information for various airlines. Real-time updates on flight status, schedules, and more. Easy integration with comprehensive documentation.\n",
+        name: "FlightMaster",
+        request: {
+          headers: {
+            "Api-Key": "YOUR-API-KEY",
+            "X-RapidAPI-Host": "flightmaster-api.p.rapidapi.com",
+          },
+          method: "GET",
+          params: {
+            departure_date: "DEPARTURE_DATE",
+            destination: "DESTINATION_CITY",
+            origin: "DEPARTURE_CITY",
+          },
+          url: "https://flightmaster-api.p.rapidapi.com/flights",
+        },
+        response: {
+          data: {
+            flights: [
+              {
+                arrival_time: "2024-03-16T13:00:00",
+                departure_time: "2024-03-16T08:00:00",
+                destination: "London",
+                flight_number: "AB123",
+                origin: "New York",
+                status: "On Time",
+              },
+              {
+                arrival_time: "2024-03-16T19:00:00",
+                departure_time: "2024-03-16T14:00:00",
+                destination: "New York",
+                flight_number: "CD456",
+                origin: "London",
+                status: "Delayed",
+              },
+            ],
+          },
+        },
+      },
+      secret: "YOUR-API-KEY, DEPARTURE_CITY, DESTINATION_CITY, DEPARTURE_DATE",
+      task: "fly",
+    };
+
     if (chatAgentResponse) {
-      const mappedArray = message.split(",").map((item: any, index: any) => {
-        return {
-          [chatAgentResponse?.data?.secret.replaceAll(" ", "").split(",")[index]]: item,
-        };
-      });
-
-      const rawDataSecretProvided = {
-        secret_provided: { ...mappedArray },
-        ...chatAgentResponse?.data,
-      };
-
       createOpenApi(rawDataSecretProvided);
     } else {
       createOpenApi({ task: message });
@@ -279,23 +333,33 @@ export default function Home() {
                 </div>
               )}
 
-              <div className="mt-8 space-y-4 hidden">
-                <Text
-                  label={`from deep_translator import GoogleTranslator# Use any translator you like, in this example GoogleTranslatortranslated = GoogleTranslator(source='auto', target='de').translate("keep it up, you are awesome")  # output -> Weiter so, du bist großartig`}
-                  className="font-normal text-black-soft text-base"
-                />
+              {chatAgentResponseFunc?.data?.func && (
+                <div className="mt-8 space-y-4">
+                  {handleSyntaxHighlighter(chatAgentResponseFunc?.data?.func)}
 
-                <Button
-                  type="button"
-                  onClick={() => {}}
-                  label="CONNECT TO CODE"
-                  className="flex w-full justify-center items-center rounded-md bg-blue-primary-soft px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-blue-primary-soft/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                />
-              </div>
+                  <Button
+                    type="button"
+                    onClick={() => setOpenModal(true)}
+                    label="SHOW THE CODE"
+                    className="flex w-full justify-center items-center rounded-md bg-blue-primary-soft px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-blue-primary-soft/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                  />
+                </div>
+              )}
             </div>
           </Sider>
         </Layout>
       </Layout>
+
+      <Modal
+        title="THE FULL CODE"
+        centered
+        open={openModal}
+        onOk={() => setOpenModal(false)}
+        onCancel={() => setOpenModal(false)}
+        width={1000}
+      >
+        {handleSyntaxHighlighter(chatAgentResponseFunc?.data?.func)}
+      </Modal>
     </ConfigProvider>
   );
 }
