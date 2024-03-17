@@ -36,16 +36,15 @@ export default function Home() {
   const { mutate: createOpenApi, isPending: isPendingCreateOpenApi } = useCreateOpenApi({
     options: {
       onSuccess: (res: any) => {
-        const response = res.data;
+        console.log("@res", res.data["Recommended API:"].description);
 
-        const content = response.choices[0]?.message?.content;
-        if (content) {
-          const chatGPTResponse = {
-            message: content,
-            sender: "Emily",
+        if (res.data) {
+          const chatAgentResponse = {
+            message: res.data["Recommended API:"].description,
+            sender: res.data["Recommended API:"].name,
             direction: "incoming",
           };
-          setMessages((prevMessages: any) => [...prevMessages, chatGPTResponse]);
+          setMessages((prevMessages: any) => [...prevMessages, chatAgentResponse]);
         }
       },
       onError: (error: any) => {
@@ -77,22 +76,11 @@ export default function Home() {
     setMessages((prevMessages: any) => [...prevMessages, newMessage]);
     setIsTyping(true);
 
-    const chatMessages = [...messages, newMessage];
+    let formdata = new FormData();
 
-    const apiMessages = chatMessages.map((messageObject: any) => {
-      const role = messageObject.sender === "Emily" ? "assistant" : "user";
-      return { role, content: messageObject.message };
-    });
+    formdata.append("answer", message);
 
-    const apiRequestBody = {
-      model: "gpt-3.5-turbo",
-      messages: [
-        { role: "system", content: "I'm a Student using Emily for learning" },
-        ...apiMessages,
-      ],
-    };
-
-    createOpenApi(apiRequestBody);
+    createOpenApi(formdata);
   };
 
   return (
@@ -150,7 +138,7 @@ export default function Home() {
               </div>
 
               <div className="mt-4 overflow-y-auto h-64 mb-6">
-                {Array.from({ length: 100 }, (_, index) => index + 1).map((item) => (
+                {Array.from({ length: 10 }, (_, index) => index + 1).map((item) => (
                   <div
                     key={item}
                     className="flex items-center gap-2 border-t-[0.5px] py-2 border-white"
@@ -214,8 +202,8 @@ export default function Home() {
                       {messages.map((message: any, i: any) => {
                         return (
                           <Message key={i} model={message}>
-                            {message.sender === "Emily" && (
-                              <Avatar src={"emily.png"} name={"Emily"} />
+                            {message.direction === "incoming" && (
+                              <Avatar src={"/emily.png"} name={message.sender} />
                             )}
                           </Message>
                         );

@@ -1,10 +1,10 @@
 import { useMutation } from "@tanstack/react-query";
-import { clientOpenApi } from "../client";
+import { clientFormData } from "../client";
 
 function useCreateOpenApi({ options }: { options?: any }) {
   return useMutation({
     mutationFn: (reqBody: any) =>
-      clientOpenApi("/chat/completions", {
+      clientFormData("/matcher", {
         method: "POST",
         data: reqBody,
       }),
